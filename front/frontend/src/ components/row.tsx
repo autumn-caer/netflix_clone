@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
-
+import "./row.css";
 interface RowProps {
   title: string;
   fetchUrl: string;
@@ -35,6 +35,7 @@ const Row: React.FC<RowProps> = ({ title, fetchUrl }) => {
               key={movie.id}
               src={`${baseUrl}${movie.poster_path}`}
               alt={movie.name}
+              className="row__poster"
             />
           );
         })}
