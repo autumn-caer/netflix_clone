@@ -19,7 +19,9 @@ module.exports = {
     'react',
     '@typescript-eslint'
   ],
-  rules: {},
+  rules: {
+    "@typescript-eslint/restrict-template-expressions": "off",
+  },
 
 
 }
