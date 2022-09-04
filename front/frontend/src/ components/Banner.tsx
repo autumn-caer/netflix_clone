@@ -54,6 +54,7 @@ const Banner: React.FC<BannerProps> = ({ fetchUrl }) => {
 
         <h1 className="banner__description">{movie?.overview}</h1>
       </div>
+      <div className="banner--fadeBottom"></div>
     </header>
   );
 };
