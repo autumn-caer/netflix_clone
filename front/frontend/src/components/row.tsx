@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
+import { fetchMovieUrl } from "../requests";
 import "./row.css";
+import YouTube from "react-youtube";
+// import movieTrailer from "movie-trailer";
+
 interface RowProps {
   title: string;
   fetchUrl: string;
@@ -14,9 +18,29 @@ interface Movie {
   backdrop_path: string;
 }
 
+interface Options {
+  height: string;
+  width: string;
+  playerVars: {
+    autoplay: 0 | 1 | undefined;
+  };
+}
+
+const opts: Options = {
+  height: "390",
+  width: "640",
+  playerVars: {
+    // https://developers.google.com/youtube/player_parameters
+    autoplay: 1,
+  },
+};
+
+const WrapYouTube: any = YouTube;
+
 const baseUrl: string = "https://image.tmdb.org/t/p/original";
 const Row: React.FC<RowProps> = ({ title, fetchUrl, isLarge }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [trailerUrl, setTrailerUrl] = useState<String>("");
 
   useEffect(() => {
     const fetchData = async (): Promise<any> => {
@@ -27,6 +51,24 @@ const Row: React.FC<RowProps> = ({ title, fetchUrl, isLarge }) => {
 
     fetchData().catch((err) => console.log(err));
   }, []);
+
+  const handleClick = (movie: Movie): void => {
+    const fetchMovie = async (): Promise<any> => {
+      if (trailerUrl) {
+        setTrailerUrl("");
+      } else {
+        const url = await axios.get(fetchMovieUrl(movie.id));
+        if (url.data.results.length) {
+          setTrailerUrl(url.data.results[0]?.key);
+        } else {
+          alert("デモ動画が見つかりませんでした。");
+        }
+      }
+    };
+
+    fetchMovie().catch((err) => console.log(err));
+  };
+
   return (
     <div className="row">
       <h2>{title}</h2>
@@ -35,6 +77,7 @@ const Row: React.FC<RowProps> = ({ title, fetchUrl, isLarge }) => {
           return (
             <img
               key={movie.id}
+              onClick={() => handleClick(movie)}
               src={
                 isLarge
                   ? `${baseUrl}${movie.backdrop_path}`
@@ -46,6 +89,7 @@ const Row: React.FC<RowProps> = ({ title, fetchUrl, isLarge }) => {
           );
         })}
       </div>
+      {trailerUrl && <WrapYouTube videoId={trailerUrl} opts={opts} />}
     </div>
   );
 };
