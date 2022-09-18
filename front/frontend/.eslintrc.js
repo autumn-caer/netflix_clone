@@ -19,7 +19,10 @@ module.exports = {
     'react',
     '@typescript-eslint'
   ],
-  rules: {},
+  rules: {
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off"
+  },
 
 
 }
